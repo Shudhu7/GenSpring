@@ -29,11 +29,11 @@ public class AIRequestDTO {
     }
 }
 
-// Response DTOs
+// Response DTOs - MAKE THIS PUBLIC
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class AIResponseDTO {
+public class AIResponseDTO {  // Changed from 'class' to 'public class'
     private String id;
     private String response;
     private String model;
@@ -49,11 +49,11 @@ class AIResponseDTO {
     }
 }
 
-// OpenAI API DTOs
+// OpenAI API DTOs - MAKE THESE PUBLIC
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class OpenAIRequestDTO {
+public class OpenAIRequestDTO {  // Changed from 'class' to 'public class'
     private String model;
     private List<Message> messages;
     @JsonProperty("max_tokens")
@@ -79,7 +79,7 @@ class OpenAIRequestDTO {
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class OpenAIResponseDTO {
+public class OpenAIResponseDTO {  // Changed from 'class' to 'public class'
     private String id;
     private String object;
     private Long created;
