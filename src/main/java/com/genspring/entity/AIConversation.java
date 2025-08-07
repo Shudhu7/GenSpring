@@ -44,7 +44,7 @@ public class AIConversation {
     @Column(name = "status")
     private String status;
     
-    @Column(name = "error_message")
+    @Column(name = "error_message", columnDefinition = "TEXT")  // Changed from VARCHAR(255) to TEXT
     private String errorMessage;
     
     @Column(name = "processing_time_ms")
