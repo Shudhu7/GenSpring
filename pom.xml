@@ -48,6 +48,28 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		
+		
+<!-- Commons IO for file operations -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.15.1</version>
+</dependency>
+
+<!-- Base64 encoding/decoding and other codec utilities -->
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.16.0</version>
+</dependency>
+
+<!-- Image Processing (optional, for advanced image handling) -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-imaging</artifactId>
+    <version>1.0.0-alpha5</version>
+</dependency>
 
 		<!-- Database -->
 		<dependency>
