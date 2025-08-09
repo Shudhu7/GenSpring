@@ -1,22 +1,41 @@
 # GenSpring AI Application
 
-A comprehensive Spring Boot application for AI text generation and processing, featuring OpenAI integration, usage analytics, and rate limiting.
+A comprehensive Spring Boot application for AI text generation, image analysis, and image generation using OpenAI APIs. This application provides RESTful endpoints for various AI operations with built-in rate limiting, usage statistics, and conversation management.
 
 ## 🚀 Features
 
+### Text Generation
 - **AI Text Generation**: Generate text using OpenAI's GPT models
-- **Multiple AI Operations**:
-  - Text Generation
-  - Text Summarization
-  - Creative Writing
-  - Text Analysis
-- **Rate Limiting**: Configurable request rate limiting per user
-- **Usage Analytics**: Track and analyze API usage patterns
+- **Text Summarization**: Create concise summaries of provided text
+- **Creative Writing**: Generate creative content with higher temperature settings
+- **Text Analysis**: Perform detailed analysis of text including tone, themes, and insights
+
+### Image Processing
+- **Image Analysis**: Analyze images using OpenAI's Vision API
+- **Image Generation**: Generate images using DALL-E models
+- **File Upload Support**: Upload and analyze image files directly
+- **Multiple Format Support**: JPEG, PNG, GIF, WebP
+
+### Core Features
+- **Rate Limiting**: Configurable request limits per user
+- **Usage Statistics**: Track API usage, tokens, and performance metrics
 - **Conversation History**: Store and retrieve conversation history
-- **RESTful API**: Well-documented REST endpoints
-- **Error Handling**: Comprehensive global exception handling
-- **Health Monitoring**: Built-in health checks and metrics
-- **API Documentation**: Interactive Swagger/OpenAPI documentation
+- **Error Handling**: Comprehensive error handling and logging
+- **API Documentation**: Swagger/OpenAPI 3.0 documentation
+- **Health Monitoring**: Built-in health check endpoints
+
+## 🛠️ Technology Stack
+
+- **Java 17+**
+- **Spring Boot 3.x**
+- **Spring Data JPA**
+- **H2 Database** (Development)
+- **Spring Web**
+- **Jackson** (JSON processing)
+- **Lombok** (Code generation)
+- **OpenAPI 3** (API documentation)
+- **JUnit 5** (Testing)
+- **Apache HttpClient 5** (HTTP client)
 
 ## 📋 Prerequisites
 
@@ -24,126 +43,253 @@ A comprehensive Spring Boot application for AI text generation and processing, f
 - Maven 3.6+
 - OpenAI API Key
 
-## 🛠️ Installation & Setup
+## ⚙️ Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
-cd genspring
+git clone https://github.com/Shudhu7/genspring-ai.git
+cd genspring-ai
 ```
 
 ### 2. Set Environment Variables
-Set your OpenAI API key as an environment variable:
-
 ```bash
-# Linux/Mac
-export OPENAI_API_KEY="your-openai-api-key-here"
-
-# Windows
-set OPENAI_API_KEY=your-openai-api-key-here
+export OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-### 3. Configure Application Properties
-The application uses `application.properties` for configuration. Key settings include:
+Or create a `.env` file:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+### 3. Build the Application
+```bash
+mvn clean compile
+```
+
+### 4. Run the Application
+```bash
+mvn spring-boot:run
+```
+
+The application will start on `http://localhost:8080/api`
+
+## 📚 API Documentation
+
+Once the application is running, access the interactive API documentation at:
+- **Swagger UI**: http://localhost:8080/api/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/api/api-docs
+
+## 🔗 API Endpoints
+
+### Text Generation Endpoints
+
+#### Generate Text
+```http
+POST /api/v1/ai/generate
+Content-Type: application/json
+X-User-ID: optional-user-id
+
+{
+  "prompt": "Write a story about AI",
+  "model": "gpt-3.5-turbo",
+  "maxTokens": 500,
+  "temperature": 0.7
+}
+```
+
+#### Summarize Text
+```http
+POST /api/v1/ai/summarize
+Content-Type: application/json
+
+{
+  "prompt": "Long text to summarize..."
+}
+```
+
+#### Generate Creative Text
+```http
+POST /api/v1/ai/creative
+Content-Type: application/json
+
+{
+  "prompt": "Write a creative poem about the ocean"
+}
+```
+
+#### Analyze Text
+```http
+POST /api/v1/ai/analyze
+Content-Type: application/json
+
+{
+  "prompt": "Text to analyze for tone and themes"
+}
+```
+
+### Image Processing Endpoints
+
+#### Analyze Image
+```http
+POST /api/v1/image/analyze
+Content-Type: application/json
+
+{
+  "imageData": "https://example.com/image.jpg",
+  "imageType": "url",
+  "prompt": "Describe this image in detail"
+}
+```
+
+#### Upload and Analyze Image
+```http
+POST /api/v1/image/analyze/upload
+Content-Type: multipart/form-data
+
+file: [image file]
+prompt: "Analyze this uploaded image"
+```
+
+#### Generate Image
+```http
+POST /api/v1/image/generate
+Content-Type: application/json
+
+{
+  "prompt": "A beautiful sunset over mountains",
+  "size": "1024x1024",
+  "quality": "hd",
+  "style": "vivid",
+  "n": 1
+}
+```
+
+### Conversation Management
+
+#### Get User Conversations
+```http
+GET /api/v1/ai/conversations
+X-User-ID: user123
+```
+
+#### Get Specific Conversation
+```http
+GET /api/v1/ai/conversations/{id}
+```
+
+### Statistics Endpoints
+
+#### Get User Statistics
+```http
+GET /api/v1/stats/user?user=user123
+```
+
+#### Get Recent Statistics
+```http
+GET /api/v1/stats/recent?days=7
+```
+
+#### Get Statistics Summary
+```http
+GET /api/v1/stats/summary?days=30
+```
+
+### Health Check
+```http
+GET /api/v1/ai/health
+```
+
+## ⚡ Rate Limiting
+
+The application includes built-in rate limiting:
+- **Default**: 60 requests per minute per user
+- **Configurable** via `application.properties`
+- **Headers**: `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+
+Rate limit exceeded response:
+```json
+{
+  "error": "Rate limit exceeded",
+  "message": "Too many requests. Please try again later.",
+  "resetTime": "2024-01-01T12:30:00"
+}
+```
+
+## 📊 Usage Statistics
+
+The application tracks:
+- **Request counts** per user and day
+- **Token usage** for text generation
+- **Success/failure rates**
+- **Average processing times**
+- **Popular models** and usage patterns
+
+## 🔧 Configuration
+
+### Application Properties
+
+Key configuration options in `src/main/resources/application.properties`:
 
 ```properties
 # Server Configuration
 server.port=8080
 server.servlet.context-path=/api
 
-# Database (H2 in-memory for development)
+# Database Configuration
 spring.datasource.url=jdbc:h2:mem:ingaledb
 spring.datasource.username=ingale
 spring.datasource.password=ingale
 
-# AI Configuration
+# AI Service Configuration
+ai.openai.api-key=${OPENAI_API_KEY}
+ai.openai.base-url=https://api.openai.com/v1
 ai.openai.model=gpt-3.5-turbo
-ai.request.timeout=30000
+ai.openai.vision-model=gpt-4-vision-preview
+ai.openai.image-model=dall-e-3
 ai.max-tokens=10000
+ai.request.timeout=30000
 
 # Rate Limiting
 rate-limit.requests-per-minute=60
 rate-limit.enabled=true
+
+# Image Configuration
+image.max-file-size=10485760
+image.allowed-types=image/jpeg,image/png,image/gif,image/webp
+
+# Logging
+logging.level.com.genspring=DEBUG
 ```
 
-### 4. Build and Run
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | OpenAI API key (required) | - |
+| `SERVER_PORT` | Server port | 8080 |
+| `RATE_LIMIT_ENABLED` | Enable rate limiting | true |
+
+## 🧪 Testing
+
+### Run All Tests
 ```bash
-# Build the application
-mvn clean install
-
-# Run the application
-mvn spring-boot:run
+mvn test
 ```
 
-The application will start on `http://localhost:8080/api`
-
-## 📖 API Documentation
-
-Once the application is running, access the interactive API documentation at:
-- Swagger UI: `http://localhost:8080/api/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:8080/api/api-docs`
-
-### Core Endpoints
-
-#### AI Generation Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/ai/generate` | Generate AI text |
-| POST | `/v1/ai/summarize` | Summarize text |
-| POST | `/v1/ai/creative` | Generate creative text |
-| POST | `/v1/ai/analyze` | Analyze text |
-
-#### Conversation Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/ai/conversations` | Get user conversations |
-| GET | `/v1/ai/conversations/{id}` | Get specific conversation |
-| GET | `/v1/ai/health` | Health check |
-
-#### Usage Statistics
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/stats/user` | Get user statistics |
-| GET | `/v1/stats/recent` | Get recent statistics |
-| GET | `/v1/stats/summary` | Get statistics summary |
-| GET | `/v1/stats/top-users` | Get top users |
-
-## 💡 Usage Examples
-
-### Basic Text Generation
+### Run Specific Test Class
 ```bash
-curl -X POST http://localhost:8080/api/v1/ai/generate \
-  -H "Content-Type: application/json" \
-  -H "X-User-ID: user123" \
-  -d '{
-    "prompt": "Write a short story about a robot learning to paint",
-    "maxTokens": 500,
-    "temperature": 0.7
-  }'
+mvn test -Dtest=AIControllerTest
 ```
 
-### Text Summarization
-```bash
-curl -X POST http://localhost:8080/api/v1/ai/summarize \
-  -H "Content-Type: application/json" \
-  -H "X-User-ID: user123" \
-  -d '{
-    "prompt": "Long text to be summarized..."
-  }'
-```
+### Test Coverage
+The project includes comprehensive unit tests for:
+- **Controllers** (Web layer testing)
+- **Services** (Business logic testing)
+- **Rate limiting** functionality
+- **Error handling** scenarios
 
-### Get User Statistics
-```bash
-curl -X GET http://localhost:8080/api/v1/stats/user \
-  -H "X-User-ID: user123"
-```
+## 📁 Project Structure
 
-## 🏗️ Architecture
-
-### Project Structure
 ```
 src/
 ├── main/
@@ -154,95 +300,85 @@ src/
 │   │   ├── entity/         # JPA entities
 │   │   ├── exception/      # Exception handling
 │   │   ├── repository/     # Data repositories
-│   │   └── service/        # Business logic
+│   │   ├── service/        # Business logic
+│   │   └── util/          # Utility classes
 │   └── resources/
-│       └── application.properties
-└── test/                   # Unit tests
+│       ├── application.properties
+│       └── banner.txt
+└── test/
+    └── java/com/genspring/
+        └── controller/     # Controller tests
 ```
 
-### Key Components
+## 🚦 Error Handling
 
-- **AIService**: Core service for AI operations
-- **RateLimitService**: Handles request rate limiting
-- **UsageStatsService**: Tracks usage analytics
-- **GlobalExceptionHandler**: Centralized error handling
-- **AIController**: REST API endpoints
-- **StatsController**: Analytics endpoints
+The application provides comprehensive error handling:
 
-## 🔧 Configuration
+### Common Error Responses
 
-### Rate Limiting
-Configure rate limiting in `application.properties`:
-```properties
-rate-limit.requests-per-minute=60
-rate-limit.enabled=true
+#### Validation Error (400)
+```json
+{
+  "error": "Validation failed",
+  "message": "Request validation failed",
+  "fieldErrors": {
+    "prompt": "Prompt cannot be blank"
+  },
+  "timestamp": "2024-01-01T12:00:00"
+}
 ```
 
-### AI Model Settings
-```properties
-ai.openai.model=gpt-3.5-turbo
-ai.request.timeout=30000
-ai.max-tokens=10000
+#### Rate Limit Exceeded (429)
+```json
+{
+  "error": "Rate limit exceeded",
+  "message": "Too many requests. Please try again later.",
+  "resetTime": "2024-01-01T12:30:00"
+}
 ```
 
-### Database Configuration
-The application uses H2 in-memory database for development:
-```properties
-spring.datasource.url=jdbc:h2:mem:ingaledb
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
+#### Internal Server Error (500)
+```json
+{
+  "error": "Internal server error",
+  "message": "An unexpected error occurred",
+  "timestamp": "2024-01-01T12:00:00"
+}
 ```
 
-Access H2 console at: `http://localhost:8080/api/h2-console`
+## 🔍 Monitoring & Observability
 
-## 📊 Monitoring & Analytics
+### H2 Console
+Access the H2 database console at: http://localhost:8080/api/h2-console
+- **JDBC URL**: `jdbc:h2:mem:ingaledb`
+- **Username**: `ingale`
+- **Password**: `ingale`
 
-### Health Checks
-- Endpoint: `GET /v1/ai/health`
-- Actuator endpoints: `/actuator/health`, `/actuator/metrics`
-
-### Usage Statistics
-The application tracks:
-- Request counts per user
-- Token usage
-- Success/failure rates
-- Processing times
-- Top users
+### Actuator Endpoints
+- **Health**: `/actuator/health`
+- **Info**: `/actuator/info`
+- **Metrics**: `/actuator/metrics`
 
 ### Logging
-Comprehensive logging is configured with different levels:
-- Application logs: `DEBUG` level
-- SQL queries: `DEBUG` level
-- Hibernate bindings: `TRACE` level
-
-## 🧪 Testing
-
-Run the test suite:
-```bash
-# Run all tests
-mvn test
-
-# Run with coverage
-mvn test jacoco:report
-```
-
-The project includes comprehensive unit tests for controllers and services.
+- **Application logs** at DEBUG level for `com.genspring` package
+- **SQL logging** enabled for development
+- **Console output** with timestamps and thread information
 
 ## 🚀 Deployment
 
 ### Production Configuration
-For production deployment:
 
-1. **Use a persistent database** (PostgreSQL, MySQL)
-2. **Set environment variables**:
-   ```bash
-   export OPENAI_API_KEY="your-production-key"
-   export SPRING_PROFILES_ACTIVE="production"
-   ```
-3. **Configure application-production.properties**
-4. **Set up monitoring and logging**
+For production deployment, consider:
+
+1. **Database**: Replace H2 with PostgreSQL/MySQL
+2. **Security**: Add authentication and authorization
+3. **Monitoring**: Integrate with monitoring solutions
+4. **Load Balancing**: Use multiple instances behind a load balancer
+5. **Environment Variables**: Externalize all configuration
 
 ### Docker Deployment
+
+Create a `Dockerfile`:
 ```dockerfile
 FROM openjdk:17-jre-slim
 COPY target/genspring-*.jar app.jar
@@ -250,40 +386,40 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 ```
 
-## 🔒 Security Considerations
-
-- API key management through environment variables
-- Rate limiting to prevent abuse
-- Input validation on all endpoints
-- Error handling that doesn't expose sensitive information
-- CORS configuration for web clients
+Build and run:
+```bash
+mvn clean package -DskipTests
+docker build -t genspring-ai .
+docker run -p 8080:8080 -e OPENAI_API_KEY=your_key genspring-ai
+```
 
 ## 📝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin feature/new-feature`
 5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🆘 Support
 
 For support and questions:
-- Documentation: Swagger UI at `/swagger-ui.html`
-- Issues: Create an issue in the repository
+- **Documentation**: Check the Swagger UI for detailed API docs
+- **Issues**: Create an issue on GitHub
 
-## 🔄 Version History
+## 🔄 Changelog
 
-- **v1.0.0**: Initial release with core AI features
-  - Text generation and processing
-  - Rate limiting
-  - Usage analytics
-  - API documentation
+### Version 1.0.0
+- Initial release with text generation capabilities
+- Image analysis and generation features
+- Rate limiting and usage statistics
+- Comprehensive API documentation
+- Health monitoring and error handling
 
 ---
 
-**GenSpring AI Application** - Empowering applications with intelligent text processing capabilities.
+Made with ❤️ by the GenSpring Team
